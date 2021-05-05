@@ -3,14 +3,12 @@ package ntnu.idatt2105.endrehadzalic.backend.controller;
 import ntnu.idatt2105.endrehadzalic.backend.model.Calculation;
 import ntnu.idatt2105.endrehadzalic.backend.service.CalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class CalculatorController {
 
     @Autowired
@@ -34,6 +32,11 @@ public class CalculatorController {
     @GetMapping("/divide/{x}/{y}")
     public float divide(@PathVariable(name = "x") float x, @PathVariable(name = "y") float y){
         return this.calculatorService.divide(x,y);
+    }
+
+    @GetMapping("/divide/{x}/0")
+    public String divideByZero(@PathVariable(name = "x") float x){
+        return "NaN";
     }
 
     @GetMapping("/history")

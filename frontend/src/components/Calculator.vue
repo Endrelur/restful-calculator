@@ -28,7 +28,8 @@
 
 <script>
 export default {
-  created() {
+  name: "Calculator",
+  async created() {
     this.clearHistory();
   },
   data() {
@@ -36,6 +37,8 @@ export default {
       display: "0",
       previous: null,
       clearNext: false,
+      addComma: false,
+      movedPrevious: false,
       calculation: 0,
       history: {},
     };
@@ -44,10 +47,7 @@ export default {
     async clearHistory() {
       await fetch("http://localhost:8080/history", {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      }).catch((error) => console.error(error));
       await this.updateHistory();
     },
     async updateHistory() {
@@ -59,17 +59,22 @@ export default {
         .catch((error) => console.error(error));
     },
     checkParams() {
-      if (this.calculation !== 0) {
+      if (this.calculation !== 0 && !this.movedPrevious) {
         this.previous = this.display;
+        this.display = "0";
+        this.movedPrevious = true;
       }
       if (this.clearNext) {
-        this.clear;
+        this.clear();
         this.clearNext = false;
       }
     },
     clear() {
+      console.log("clearing!");
       this.display = "0";
+      this.previous = null;
       this.calculation = 0;
+      this.movedPrevious = false;
     },
     prefix() {
       let prefix = this.display.charAt(0);
@@ -83,13 +88,23 @@ export default {
     },
     addNumber(number) {
       this.checkParams();
+      if (this.addComma) {
+        number = "." + number;
+        this.addComma = false;
+      }
       if (this.display === "0" || (this.display === "0" && number === "0")) {
         this.display = number;
       } else {
         this.display += number;
       }
     },
+    comma() {
+      if (!this.display.includes(".")) {
+        this.addComma = true;
+      }
+    },
     percent() {
+      console.log;
       let num = parseFloat(this.display);
       this.display = "" + num / 100;
       this.clearNext = true;
@@ -97,15 +112,22 @@ export default {
     plus() {
       console.log("pressed plus!");
       this.calculation = 1;
+      this.clearNext = false;
     },
     minus() {
+      console.log("pressed minus!");
       this.calculation = 2;
+      this.clearNext = false;
     },
     multiply() {
+      console.log("pressed multiply!");
       this.calculation = 3;
+      this.clearNext = false;
     },
     divide() {
+      console.log("pressed divide!");
       this.calculation = 4;
+      this.clearNext = false;
     },
     async equals() {
       const PLUS = 1;
@@ -118,32 +140,39 @@ export default {
       if (this.previous !== null) {
         switch (this.calculation) {
           case PLUS:
+            console.log("calculating plus");
             answer = await this.doPlus();
             break;
           case MINUS:
+            console.log("calculating minus");
             answer = await this.doMinus();
             break;
           case MULTIPLY:
+            console.log("calculating multiplication");
             answer = await this.doMultiply();
             break;
           case DIVIDE:
+            console.log("calculating division");
             answer = await this.doDivide();
             break;
           default:
             console.error("error, got " + this.calculation + " as calculation");
             break;
         }
-        this.calculation = 0;
-        this.previous = null;
-        this.display = answer;
+        this.clear();
+        this.display = "" + answer;
         this.clearNext = true;
+        this.updateHistory();
+        console.log("the answer was:");
+        console.log(answer);
       }
     },
 
     async doPlus() {
-      await fetch(
+      return await fetch(
         "http://localhost:8080/plus/" + this.previous + "/" + this.display
       )
+        .then((response) => response.json())
         .then((data) => {
           return data;
         })
@@ -151,9 +180,10 @@ export default {
     },
 
     async doMinus() {
-      await fetch(
+      return await fetch(
         "http://localhost:8080/minus/" + this.previous + "/" + this.display
       )
+        .then((response) => response.json())
         .then((data) => {
           return data;
         })
@@ -161,9 +191,10 @@ export default {
     },
 
     async doMultiply() {
-      await fetch(
+      return await fetch(
         "http://localhost:8080/multiply/" + this.previous + "/" + this.display
       )
+        .then((response) => response.json())
         .then((data) => {
           return data;
         })
@@ -171,9 +202,13 @@ export default {
     },
 
     async doDivide() {
-      await fetch(
+      return await fetch(
         "http://localhost:8080/divide/" + this.previous + "/" + this.display
       )
+        .then((response) => {
+          console.log(response);
+          response.json();
+        })
         .then((data) => {
           return data;
         })
@@ -225,10 +260,10 @@ export default {
 .function {
   max-height: 75px;
   border-radius: 10px;
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   cursor: pointer;
 }
 </style>
