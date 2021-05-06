@@ -2,6 +2,8 @@ package ntnu.idatt2105.endrehadzalic.backend.controller;
 
 import ntnu.idatt2105.endrehadzalic.backend.model.Calculation;
 import ntnu.idatt2105.endrehadzalic.backend.service.CalculatorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,8 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class CalculatorController {
+    static Logger logger = LoggerFactory.getLogger(CalculatorController.class);
+
 
     @Autowired
     CalculatorService calculatorService;
@@ -35,8 +39,9 @@ public class CalculatorController {
     }
 
     @GetMapping("/divide/{x}/0")
-    public String divideByZero(@PathVariable(name = "x") float x){
-        return "NaN";
+    public float divideByZero(@PathVariable(name = "x") float x){
+        logger.info("there was a request for divide by 0, returning 0");
+        return 0;
     }
 
     @GetMapping("/history")

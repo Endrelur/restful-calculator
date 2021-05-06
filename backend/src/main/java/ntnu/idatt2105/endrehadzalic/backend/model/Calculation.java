@@ -1,10 +1,12 @@
 package ntnu.idatt2105.endrehadzalic.backend.model;
 
 public class Calculation {
+    private int id;
     private String calculation;
     private float answer;
 
-    public Calculation(String calculation, float answer) {
+    public Calculation(int id,String calculation, float answer) {
+        this.id = id;
         this.calculation = calculation;
         this.answer = answer;
     }
@@ -23,5 +25,13 @@ public class Calculation {
 
     public void setAnswer(float answer) {
         this.answer = answer;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

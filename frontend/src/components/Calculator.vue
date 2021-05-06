@@ -22,6 +22,10 @@
       <div class="number" id="zero" @click="addNumber('0')">0</div>
       <div class="function" @click="comma()">.</div>
       <div class="function" @click="equals()">=</div>
+
+      <div class="history" v-for="calc in history" :key="calc.id">
+        {{ calc.calculation }} = {{ calc.answer }}
+      </div>
     </div>
   </body>
 </template>
@@ -29,6 +33,7 @@
 <script>
 export default {
   name: "Calculator",
+  components: {},
   async created() {
     this.clearHistory();
   },
@@ -206,10 +211,10 @@ export default {
         "http://localhost:8080/divide/" + this.previous + "/" + this.display
       )
         .then((response) => {
-          console.log(response);
           response.json();
         })
         .then((data) => {
+          console.log(data);
           return data;
         })
         .catch((error) => console.error(error));
@@ -242,6 +247,11 @@ export default {
 
 .number {
   background-color: darkgray;
+}
+
+.history {
+  text-align: right;
+  grid-column: 1/5;
 }
 
 .number:hover {

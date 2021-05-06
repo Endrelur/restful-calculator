@@ -27,7 +27,7 @@ public class CalculatorService {
     public float plus(float x, float y){
         logger.info("adding " + x + " to " + y);
         float answer = x+y;
-        this.history.push(new Calculation(x + "+" + y, answer));
+        this.history.push(new Calculation(this.history.size(),x + "+" + y, answer));
         logger.info("answer was: " + answer);
        return answer;
     }
@@ -35,7 +35,7 @@ public class CalculatorService {
     public float minus(float x, float y){
         logger.info("subtracting " + y + " from " + x);
         float answer = x-y;
-        this.history.push(new Calculation(x + "-" + y, answer));
+        this.history.push(new Calculation(this.history.size(),x + "-" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
@@ -43,7 +43,7 @@ public class CalculatorService {
     public float multiply(float x, float y){
         logger.info("multiplying " + x + " with " + y);
         float answer = x*y;
-        this.history.push(new Calculation(x + "*" + y, answer));
+        this.history.push(new Calculation(this.history.size(),x + "×" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
@@ -51,13 +51,13 @@ public class CalculatorService {
     public float divide(float x, float y){
         logger.info("dividing " + x + " with " + y);
         float answer = x/y;
-        this.history.push(new Calculation(x + "/" + y, answer));
+        this.history.push(new Calculation(this.history.size(),x + "÷" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
 
     public LinkedList<Calculation> getHistory(){
-        logger.info("returning the history of size: " + this.history.size());
+        logger.info("returning the calculation history of size: " + this.history.size());
         return this.history;
     }
 
