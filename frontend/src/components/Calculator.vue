@@ -164,12 +164,21 @@ export default {
             console.error("error, got " + this.calculation + " as calculation");
             break;
         }
-        this.clear();
-        this.display = "" + answer;
-        this.clearNext = true;
-        this.updateHistory();
-        console.log("the answer was:");
-        console.log(answer);
+        if (typeof answer === "number") {
+          this.clear();
+          this.display = "" + answer;
+          this.clearNext = true;
+          this.updateHistory();
+          console.log("the answer was:");
+          console.log(answer);
+        } else {
+          this.clear();
+          this.display = "NaN";
+          this.clearNext = true;
+          this.updateHistory();
+          console.log("the answer was:");
+          console.log(answer);
+        }
       }
     },
 
@@ -210,12 +219,13 @@ export default {
       return await fetch(
         "http://localhost:8080/divide/" + this.previous + "/" + this.display
       )
-        .then((response) => {
-          response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          return data;
+          if (/^-?[\d.]+(?:e-?\d+)?$/.test(data)) {
+            return data;
+          } else {
+            return data.text();
+          }
         })
         .catch((error) => console.error(error));
     },
@@ -252,6 +262,10 @@ export default {
 .history {
   text-align: right;
   grid-column: 1/5;
+  background-color: darkslategray;
+  opacity: 50%;
+  border-radius: 10px;
+  padding-right: 2%;
 }
 
 .number:hover {

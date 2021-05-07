@@ -39,9 +39,8 @@ public class CalculatorController {
     }
 
     @GetMapping("/divide/{x}/0")
-    public float divideByZero(@PathVariable(name = "x") float x){
-        logger.info("there was a request for divide by 0, returning 0");
-        return 0;
+    public String divideByZero(@PathVariable(name = "x") float x){
+        return null;
     }
 
     @GetMapping("/history")

@@ -20,48 +20,54 @@ public class CalculatorService {
 
     private LinkedList<Calculation> history;
 
-    public CalculatorService(){
-        this.history  = new LinkedList<>();
+    public CalculatorService() {
+        this.history = new LinkedList<>();
     }
 
-    public float plus(float x, float y){
+    public float plus(float x, float y) {
         logger.info("adding " + x + " to " + y);
-        float answer = x+y;
-        this.history.push(new Calculation(this.history.size(),x + "+" + y, answer));
+        float answer = x + y;
+        this.history.push(new Calculation(this.history.size(), x + "+" + y, answer));
         logger.info("answer was: " + answer);
-       return answer;
+        return answer;
     }
 
-    public float minus(float x, float y){
+    public float minus(float x, float y) {
         logger.info("subtracting " + y + " from " + x);
-        float answer = x-y;
-        this.history.push(new Calculation(this.history.size(),x + "-" + y, answer));
+        float answer = x - y;
+        this.history.push(new Calculation(this.history.size(), x + "-" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
 
-    public float multiply(float x, float y){
+    public float multiply(float x, float y) {
         logger.info("multiplying " + x + " with " + y);
-        float answer = x*y;
-        this.history.push(new Calculation(this.history.size(),x + "×" + y, answer));
+        float answer = x * y;
+        this.history.push(new Calculation(this.history.size(), x + "×" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
 
-    public float divide(float x, float y){
+    public float divide(float x, float y) {
         logger.info("dividing " + x + " with " + y);
-        float answer = x/y;
-        this.history.push(new Calculation(this.history.size(),x + "÷" + y, answer));
+        float answer;
+        if (y == 0) {
+            answer = 0;
+        } else {
+            answer = x / y;
+        }
+
+        this.history.push(new Calculation(this.history.size(), x + "÷" + y, answer));
         logger.info("answer was: " + answer);
         return answer;
     }
 
-    public LinkedList<Calculation> getHistory(){
+    public LinkedList<Calculation> getHistory() {
         logger.info("returning the calculation history of size: " + this.history.size());
         return this.history;
     }
 
-    public void clearHistory(){
+    public void clearHistory() {
         logger.info("clearing the history.");
         this.history = new LinkedList<>();
     }
